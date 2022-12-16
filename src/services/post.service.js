@@ -1,30 +1,23 @@
-import axios from "axios";
-import { API_URL } from "../constraints";
+import rootInstance from "./utilsService/rootInstance";
 
-const readAllPosts = () => {
-    return axios.get(API_URL + "/post/all");
+const readAllPosts = async () => {
+    return await rootInstance.get("/post/all");
 }
 
-const readPostById= (id) => {
-    return axios.get(API_URL + "/post/" + id);
+const readPostById = async (id) => {
+    return await rootInstance.get("/post/" + id);
 }
 
-const createPost = (content, image) => {
-    return axios.post(API_URL + "/post/add", {
-        content, 
-        image
-    });
+const createPost = async (post) => {
+    return await rootInstance.post("/post/add", post);
 }
 
-const deletePost = (id) => {
-    return axios.delete(API_URL + "/post/remove/");
+const deletePost = async (id) => {
+    return await rootInstance.delete("/post/remove/" + id);
 }
 
-const updatePost = (content, image) => {
-    return axios.put(API_URL + "/post/update/", {
-        content, 
-        image
-    });
+const updatePost = async (post) => {
+    return await rootInstance.put("/post/update", post);
 }
 
 const PostService = {

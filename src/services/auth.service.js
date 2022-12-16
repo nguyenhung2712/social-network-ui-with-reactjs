@@ -1,31 +1,30 @@
-import axios from "axios";
-import { API_URL } from "../constraints";
+import rootInstance from "./utilsService/rootInstance";
+import TokenService from "./token.service";
 
-const register = (username, email, password) => {
-  return axios.post(API_URL + "/auth/signup", {
+const register = async (username, email, password) => {
+  return await rootInstance.post("/auth/signup", {
     username,
     email,
     password,
   });
 };
 
-const login = (username, password) => {
-  return axios
-    .post(API_URL + "/auth/signin", {
+const login = async (username, password) => {
+  return await rootInstance
+    .post("/auth/signin", {
       username,
       password,
     })
     .then((response) => {
       if (response.data.accessToken) {
-        localStorage.setItem("user", JSON.stringify(response.data));
+        TokenService.setUser(response.data);
       }
-
       return response.data;
     });
 };
 
 const logout = () => {
-  localStorage.removeItem("user");
+  TokenService.removeUser();
 };
 
 const getCurrentUser = () => {
@@ -40,3 +39,4 @@ const AuthService = {
 };
 
 export default AuthService;
+

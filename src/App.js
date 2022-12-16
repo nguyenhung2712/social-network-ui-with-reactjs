@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { Routes, Route, Link } from "react-router-dom";
-//import "bootstrap/dist/css/bootstrap.min.css";
-import "./App.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 import AuthService from "./services/auth.service";
 
 import Login from "./components/Login/Login";
 import Register from "./components/Register/Register";
-import Home from "./components/Home/Home";
 import Profile from "./components/Profile";
+import PostList from "./components/Post/PostList";
+import GroupList from "./components/Group/GroupList";
+import GroupCreate from "./components/Group/GroupCreate";
+import GroupPage from "./components/Group/GroupPage";
 
 import Event from "./utils/Event";
+import PrivateRoute from "./utils/PrivateRoute";
 
 function App() {
 
@@ -38,21 +41,70 @@ function App() {
   };
 
   return (
-    <div>
-      <nav className="navbar navbar-expand navbar-dark bg-dark">
-        <Link to={"/"} className="navbar-brand">
-          FAKEKEKE
-        </Link>
-        <div className="navbar-nav mr-auto">
-          <li className="nav-item">
-            <Link to={"/home"} className="nav-link">
-              Home
-            </Link>
-          </li>
+    <div className="theme-layout">
+      <div className="topbar stick">
+        <div className="logo">
+          <a title="" href="newsfeed.html"><img src="images/logo.png" alt="" /></a>
         </div>
+        
+        <div className="top-area">
+          <ul className="main-menu">
+            <li>
+              <Link to={"/"}>
+                Home
+              </Link>
+            </li>
+            <li>
+              <Link to={"/posts"}>
+                Posts
+              </Link>
+            </li>
+            <li>
+              <Link to={"/groups"}>
+                Groups
+              </Link>
+            </li>
+          </ul>
+          <ul className="setting-area">
+            <li>
+              <a href="#" title="Home" data-ripple=""><i className="ti-search"></i></a>
+              <div className="searched">
+                <form method="post" className="form-search">
+                  <input type="text" placeholder="Search Friend" />
+                  <button data-ripple><i className="ti-search"></i></button>
+                </form>
+              </div>
+            </li>
+            <li><a href="newsfeed.html" title="Home" data-ripple=""><i className="ti-home"></i></a></li>
+            
+          </ul>
+          <div className="user-img">
+            <img src="images/resources/admin.jpg" alt="" />
+            <span className="status f-online"></span>
+            <div className="user-setting">
+              <a href="#" title=""><span className="status f-online"></span>online</a>
+              <a href="#" title=""><span className="status f-away"></span>away</a>
+              <a href="#" title=""><span className="status f-off"></span>offline</a>
+              <a href="#" title=""><i className="ti-user"></i> view profile</a>
+              <a href="#" title=""><i className="ti-pencil-alt"></i>edit profile</a>
+              <a href="#" title=""><i className="ti-target"></i>activity log</a>
+              <a href="#" title=""><i className="ti-settings"></i>account setting</a>
+              <a href="#" title=""><i className="ti-power-off"></i>log out</a>
+            </div>
+          </div>
+          <span className="ti-menu main-menu" data-ripple=""></span>
+        </div>
+      </div>
+     
+      <nav className="navbar navbar-expand navbar-dark bg-dark">
 
         {currentUser ? (
           <div className="navbar-nav ml-auto">
+            <li className="nav-item">
+              <Link to={"/posts"} className="nav-link">
+                Posts
+              </Link>
+            </li>
             <li className="nav-item">
               <Link to={"/profile"} className="nav-link">
                 {currentUser.username}
@@ -81,13 +133,33 @@ function App() {
         )}
       </nav>
 
-      <div className="container mt-3">
+      <div className="mt-3">
         <Routes>
-          <Route path="/" element={<Home/>} />
-          <Route path="/home" element={<Home/>} />
+          {/* Cần thêm feature khi jwt expired thì redirect user về /login */}
           <Route path="/login" element={<Login/>} />
           <Route path="/register" element={<Register/>} />
           <Route path="/profile" element={<Profile/>} />
+          {/* Thêm privateroute vào các route cần auth mới truy cập được */}
+          <Route path="/posts" element={
+            <PrivateRoute>
+              <PostList />
+            </PrivateRoute>
+          } />
+          <Route path="/groups" element={
+            <PrivateRoute>
+              <GroupList />
+            </PrivateRoute>
+          } />
+          <Route path="/group/create" element={
+            <PrivateRoute>
+              <GroupCreate />
+            </PrivateRoute>
+          } />
+          <Route path="/group/:id" element={
+            <PrivateRoute>
+              <GroupPage />
+            </PrivateRoute>
+          } />
         </Routes>
       </div>
     </div>
